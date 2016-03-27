@@ -91,6 +91,7 @@ class TextViewWindow(Gtk.Window):
 				Gtk.FileChooserAction.OPEN,
 				(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
 					Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+		self.add_filters(file_chooser)
 		# Run the file chooser window and check response
 		response = file_chooser.run()
 		# Read the file
@@ -139,6 +140,23 @@ class TextViewWindow(Gtk.Window):
 			# Close the file
 			self.text_file.close()
 			self.text_file = None
+
+	def add_filters(self, dialog):
+		# MaccNCheese files
+		filter_mnc = Gtk.FileFilter()
+		filter_mnc.set_name("MaccNCheese files")
+		filter_mnc.add_pattern("*.mnc")
+		dialog.add_filter(filter_mnc)
+		# Test files
+		filter_text = Gtk.FileFilter()
+		filter_text.set_name("Text files")
+		filter_text.add_mime_type("text/plain")
+		dialog.add_filter(filter_text)
+		# Any file
+		filter_any = Gtk.FileFilter()
+		filter_any.set_name("Any files")
+		filter_any.add_pattern("*")
+		dialog.add_filter(filter_any)
 
 
 if __name__ == "__main__":

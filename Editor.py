@@ -39,7 +39,7 @@ class EditorMainWindow(Gtk.Window):
 	def create_toolbar(self):
 		# Create toolbar and attach it to the grid
 		toolbar = Gtk.Toolbar()
-		self.grid.attach(toolbar, 0, 0, 3, 1)
+		self.grid.attach(toolbar, 0, 0, 1, 1)
 		# New file button
 		button_newfile = Gtk.ToolButton()
 		button_newfile.set_icon_name("document-new-symbolic")
@@ -86,7 +86,7 @@ class EditorMainWindow(Gtk.Window):
 		scrolledwindow = Gtk.ScrolledWindow()
 		scrolledwindow.set_hexpand(True)
 		scrolledwindow.set_vexpand(True)
-		self.grid.attach(scrolledwindow, 0, 1, 3, 1)
+		self.grid.attach(scrolledwindow, 0, 1, 1, 1)
 		# Create the TextView
 		self.textview = Gtk.TextView()
 		self.textbuffer = self.textview.get_buffer()

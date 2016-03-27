@@ -34,6 +34,7 @@ class TextViewWindow(Gtk.Window):
 		self.create_textview()
 		# Variables
 		self.text_file = None
+		self.text_file_name = None
 
 	def create_toolbar(self):
 		# Create toolbar and attach it to the grid
@@ -49,26 +50,31 @@ class TextViewWindow(Gtk.Window):
 		button_savefile.set_icon_name("document-save-symbolic")
 		toolbar.insert(button_savefile, 1)
 		button_savefile.connect("clicked", self.on_savefile_clicked)
+		# 'Save file as' button
+		button_saveas = Gtk.ToolButton()
+		button_saveas.set_icon_name("document-save-as-symbolic")
+		toolbar.insert(button_saveas, 2)
+		button_saveas.connect("clicked", self.on_saveas_clicked)
 		# Separator
-		toolbar.insert(Gtk.SeparatorToolItem(), 2)
+		toolbar.insert(Gtk.SeparatorToolItem(), 3)
 		# Edit-cut button
 		button_editcut = Gtk.ToolButton()
 		button_editcut.set_icon_name("edit-cut-symbolic")
-		toolbar.insert(button_editcut, 3)
+		toolbar.insert(button_editcut, 4)
 		# Edit-copy file button
 		button_editcopy = Gtk.ToolButton()
 		button_editcopy.set_icon_name("edit-copy-symbolic")
-		toolbar.insert(button_editcopy, 4)
+		toolbar.insert(button_editcopy, 5)
 		# Edit-paste file button
 		button_editpaste = Gtk.ToolButton()
 		button_editpaste.set_icon_name("edit-paste-symbolic")
-		toolbar.insert(button_editpaste, 5)
+		toolbar.insert(button_editpaste, 6)
 		# Separator
-		toolbar.insert(Gtk.SeparatorToolItem(), 6)
+		toolbar.insert(Gtk.SeparatorToolItem(), 7)
 		# Help button
 		button_helpfaq = Gtk.ToolButton()
 		button_helpfaq.set_icon_name("help-faq")
-		toolbar.insert(button_helpfaq, 7)
+		toolbar.insert(button_helpfaq, 8)
 
 	def create_textview(self):
 		# Create a ScrolledWindow
@@ -101,11 +107,26 @@ class TextViewWindow(Gtk.Window):
 		file_chooser.destroy()
 
 	def on_savefile_clicked(self, widget):
+		# Check if it is a new file
+		if self.text_file_name == None:
+			# Ask for a name
+			self.on_saveas_clicked(widget)
+		else:
+			# Save the file with the same name
+			self.write_text_file(self.text_file_name)
+
+	def on_saveas_clicked(self, widget):
 		# Create a file chooser window
 		file_chooser = Gtk.FileChooserDialog("Save file", self,
 				Gtk.FileChooserAction.SAVE,
 				(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
 					Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+		# Check default file name and ask before overwritting
+		if self.text_file_name != None:
+			file_chooser.set_filename(self.text_file_name)
+		else:
+			file_chooser.set_current_name("Untitled.mnc")
+		file_chooser.set_do_overwrite_confirmation(True)
 		# Run the file chooser window and check response
 		response = file_chooser.run()
 		# Write to the file
@@ -121,6 +142,7 @@ class TextViewWindow(Gtk.Window):
 		except IOError:
 			print("Could not open the file.")
 		else:
+			self.text_file_name = file_name
 			self.textbuffer.set_text(self.text_file.read())
 			# Close the file
 			self.text_file.close()
@@ -133,6 +155,7 @@ class TextViewWindow(Gtk.Window):
 		except IOError:
 			print("Could not open the file.")
 		else:
+			self.text_file_name = file_name
 			start = self.textbuffer.get_start_iter()
 			end = self.textbuffer.get_end_iter()
 			self.text_file.write(self.textbuffer.get_text(

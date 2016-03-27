@@ -18,7 +18,7 @@
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 class EditorMainWindow(Gtk.Window):
 
@@ -35,6 +35,7 @@ class EditorMainWindow(Gtk.Window):
 		# Variables
 		self.text_file = None
 		self.text_file_name = None
+		self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
 
 	def create_toolbar(self):
 		# Create toolbar and attach it to the grid
@@ -66,14 +67,17 @@ class EditorMainWindow(Gtk.Window):
 		button_editcut = Gtk.ToolButton()
 		button_editcut.set_icon_name("edit-cut-symbolic")
 		toolbar.insert(button_editcut, 5)
+		button_editcut.connect("clicked", self.on_editcut_clicked)
 		# Edit-copy file button
 		button_editcopy = Gtk.ToolButton()
 		button_editcopy.set_icon_name("edit-copy-symbolic")
 		toolbar.insert(button_editcopy, 6)
+		button_editcopy.connect("clicked", self.on_editcopy_clicked)
 		# Edit-paste file button
 		button_editpaste = Gtk.ToolButton()
 		button_editpaste.set_icon_name("edit-paste-symbolic")
 		toolbar.insert(button_editpaste, 7)
+		button_editpaste.connect("clicked", self.on_editpaste_clicked)
 		# Separator
 		toolbar.insert(Gtk.SeparatorToolItem(), 8)
 		# Compile button
@@ -204,6 +208,39 @@ class EditorMainWindow(Gtk.Window):
 		filter_any.set_name("Any files")
 		filter_any.add_pattern("*")
 		dialog.add_filter(filter_any)
+
+	def on_editcut_clicked(self, widget):
+		# Identify selected text
+		bounds = self.textbuffer.get_selection_bounds()
+		if len(bounds) > 0:
+			start, end = bounds
+			# Copy text to clipboard
+			self.clipboard.set_text(self.textbuffer.get_text(start,
+					end, False), -1)
+			# Delete selected text
+			self.textbuffer.delete(start, end)
+
+	def on_editcopy_clicked(self, widget):
+		# Identify selected text
+		bounds = self.textbuffer.get_selection_bounds()
+		if len(bounds) > 0:
+			start, end = bounds
+			# Copy text to clipboard
+			self.clipboard.set_text(self.textbuffer.get_text(start,
+					end, False), -1)
+
+	def on_editpaste_clicked(self, widget):
+		# Check if there is copied text
+		text = self.clipboard.wait_for_text()
+		if text != None:
+			# Identify selected text
+			bounds = self.textbuffer.get_selection_bounds()
+			if len(bounds) > 0:
+				start, end = bounds
+				# Delete selected text
+				self.textbuffer.delete(start, end)
+			# Insert data from clipboard
+			self.textbuffer.insert_at_cursor(text, -1)
 
 
 if __name__ == "__main__":

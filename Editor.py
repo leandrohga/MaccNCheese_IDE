@@ -90,7 +90,7 @@ class EditorMainWindow(Gtk.Window):
 		# Create the TextView
 		self.textview = Gtk.TextView()
 		self.textbuffer = self.textview.get_buffer()
-		self.textbuffer.set_text("Please open a file or save this one.")
+		self.textbuffer.set_text("")
 		scrolledwindow.add(self.textview)
 		# Set the justification and wraping
 		self.textview.set_wrap_mode(Gtk.WrapMode.WORD)

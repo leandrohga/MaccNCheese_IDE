@@ -20,7 +20,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-class TextViewWindow(Gtk.Window):
+class EditorMainWindow(Gtk.Window):
 
 	def __init__(self):
 		# Create the window
@@ -40,41 +40,46 @@ class TextViewWindow(Gtk.Window):
 		# Create toolbar and attach it to the grid
 		toolbar = Gtk.Toolbar()
 		self.grid.attach(toolbar, 0, 0, 3, 1)
+		# New file button
+		button_newfile = Gtk.ToolButton()
+		button_newfile.set_icon_name("document-new-symbolic")
+		toolbar.insert(button_newfile, 0)
+		button_newfile.connect("clicked", self.on_newfile_clicked)
 		# Open file button
 		button_openfile = Gtk.ToolButton()
 		button_openfile.set_icon_name("document-open-symbolic")
-		toolbar.insert(button_openfile, 0)
+		toolbar.insert(button_openfile, 1)
 		button_openfile.connect("clicked", self.on_openfile_clicked)
 		# Save file button
 		button_savefile = Gtk.ToolButton()
 		button_savefile.set_icon_name("document-save-symbolic")
-		toolbar.insert(button_savefile, 1)
+		toolbar.insert(button_savefile, 2)
 		button_savefile.connect("clicked", self.on_savefile_clicked)
 		# 'Save file as' button
 		button_saveas = Gtk.ToolButton()
 		button_saveas.set_icon_name("document-save-as-symbolic")
-		toolbar.insert(button_saveas, 2)
+		toolbar.insert(button_saveas, 3)
 		button_saveas.connect("clicked", self.on_saveas_clicked)
 		# Separator
-		toolbar.insert(Gtk.SeparatorToolItem(), 3)
+		toolbar.insert(Gtk.SeparatorToolItem(), 4)
 		# Edit-cut button
 		button_editcut = Gtk.ToolButton()
 		button_editcut.set_icon_name("edit-cut-symbolic")
-		toolbar.insert(button_editcut, 4)
+		toolbar.insert(button_editcut, 5)
 		# Edit-copy file button
 		button_editcopy = Gtk.ToolButton()
 		button_editcopy.set_icon_name("edit-copy-symbolic")
-		toolbar.insert(button_editcopy, 5)
+		toolbar.insert(button_editcopy, 6)
 		# Edit-paste file button
 		button_editpaste = Gtk.ToolButton()
 		button_editpaste.set_icon_name("edit-paste-symbolic")
-		toolbar.insert(button_editpaste, 6)
+		toolbar.insert(button_editpaste, 7)
 		# Separator
-		toolbar.insert(Gtk.SeparatorToolItem(), 7)
+		toolbar.insert(Gtk.SeparatorToolItem(), 8)
 		# Help button
 		button_helpfaq = Gtk.ToolButton()
 		button_helpfaq.set_icon_name("help-faq")
-		toolbar.insert(button_helpfaq, 8)
+		toolbar.insert(button_helpfaq, 9)
 
 	def create_textview(self):
 		# Create a ScrolledWindow
@@ -90,6 +95,11 @@ class TextViewWindow(Gtk.Window):
 		# Set the justification and wraping
 		self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
 		self.textview.set_justification(Gtk.Justification.LEFT)
+
+	def on_newfile_clicked(self, widget):
+		# Clean file name and textbuffer
+		self.text_file_name = None
+		self.textbuffer.set_text("")
 
 	def on_openfile_clicked(self, widget):
 		# Create a file chooser window
@@ -183,7 +193,7 @@ class TextViewWindow(Gtk.Window):
 
 
 if __name__ == "__main__":
-	win = TextViewWindow()
+	win = EditorMainWindow()
 	win.connect("delete-event", Gtk.main_quit)
 	win.show_all()
 	Gtk.main()

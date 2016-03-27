@@ -41,6 +41,7 @@ class TextViewWindow(Gtk.Window):
 		button_openfile = Gtk.ToolButton()
 		button_openfile.set_icon_name("document-open-symbolic")
 		toolbar.insert(button_openfile, 0)
+		button_openfile.connect("clicked", self.on_openfile_clicked)
 		# Save file button
 		button_savefile = Gtk.ToolButton()
 		button_savefile.set_icon_name("document-save-symbolic")
@@ -80,6 +81,21 @@ class TextViewWindow(Gtk.Window):
 		# Set the justification and wraping
 		self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
 		self.textview.set_justification(Gtk.Justification.LEFT)
+
+	def on_openfile_clicked(self, widget):
+		# Create a file chooser window
+		file_chooser = Gtk.FileChooserDialog("Open file", self,
+				Gtk.FileChooserAction.OPEN,
+				(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+					Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+		# Run the file chooser window and check response
+		response = file_chooser.run()
+		if response == Gtk.ResponseType.OK:
+			print("Open file: " + file_chooser.get_filename())
+		elif response == Gtk.ResponseType.CANCEL:
+			print("Cancel clicked")
+
+		file_chooser.destroy()
 
 
 if __name__ == "__main__":

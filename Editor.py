@@ -93,16 +93,9 @@ class TextViewWindow(Gtk.Window):
 					Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
 		# Run the file chooser window and check response
 		response = file_chooser.run()
+		# Read the file
 		if response == Gtk.ResponseType.OK:
-			# Open and read the file
-			# TODO: make sure the file was openned, check for errors
-			self.text_file = open(file_chooser.get_filename(), 'r')
-			self.textbuffer.set_text(self.text_file.read())
-			# Close the file
-			self.text_file.close()
-			self.text_file = None
-		elif response == Gtk.ResponseType.CANCEL:
-			print("Cancel clicked")
+			self.read_text_file(file_chooser.get_filename())
 		# Destroy dialog window
 		file_chooser.destroy()
 
@@ -114,10 +107,31 @@ class TextViewWindow(Gtk.Window):
 					Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
 		# Run the file chooser window and check response
 		response = file_chooser.run()
+		# Write to the file
 		if response == Gtk.ResponseType.OK:
-			# Open and write to the file
-			# TODO: make sure the file was openned, check for errors
-			self.text_file = open(file_chooser.get_filename(), 'w')
+			self.write_text_file(file_chooser.get_filename())
+		# Destroy dialog window
+		file_chooser.destroy()
+
+	def read_text_file(self, file_name):
+		# Open and read the file
+		try:
+			self.text_file = open(file_name, 'r')
+		except IOError:
+			print("Could not open the file.")
+		else:
+			self.textbuffer.set_text(self.text_file.read())
+			# Close the file
+			self.text_file.close()
+			self.text_file = None
+
+	def write_text_file(self, file_name):
+		# Open and write to the file
+		try:
+			self.text_file = open(file_name, 'w')
+		except IOError:
+			print("Could not open the file.")
+		else:
 			start = self.textbuffer.get_start_iter()
 			end = self.textbuffer.get_end_iter()
 			self.text_file.write(self.textbuffer.get_text(
@@ -125,10 +139,7 @@ class TextViewWindow(Gtk.Window):
 			# Close the file
 			self.text_file.close()
 			self.text_file = None
-		elif response == Gtk.ResponseType.CANCEL:
-			print("Cancel clicked")
-		# Destroy dialog window
-		file_chooser.destroy()
+
 
 if __name__ == "__main__":
 	win = TextViewWindow()

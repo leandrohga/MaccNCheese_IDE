@@ -48,6 +48,7 @@ class TextViewWindow(Gtk.Window):
 		button_savefile = Gtk.ToolButton()
 		button_savefile.set_icon_name("document-save-symbolic")
 		toolbar.insert(button_savefile, 1)
+		button_savefile.connect("clicked", self.on_savefile_clicked)
 		# Separator
 		toolbar.insert(Gtk.SeparatorToolItem(), 2)
 		# Edit-cut button
@@ -103,9 +104,31 @@ class TextViewWindow(Gtk.Window):
 		elif response == Gtk.ResponseType.CANCEL:
 			print("Cancel clicked")
 		# Destroy dialog window
-
 		file_chooser.destroy()
 
+	def on_savefile_clicked(self, widget):
+		# Create a file chooser window
+		file_chooser = Gtk.FileChooserDialog("Save file", self,
+				Gtk.FileChooserAction.SAVE,
+				(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+					Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+		# Run the file chooser window and check response
+		response = file_chooser.run()
+		if response == Gtk.ResponseType.OK:
+			# Open and write to the file
+			# TODO: make sure the file was openned, check for errors
+			self.text_file = open(file_chooser.get_filename(), 'w')
+			start = self.textbuffer.get_start_iter()
+			end = self.textbuffer.get_end_iter()
+			self.text_file.write(self.textbuffer.get_text(
+					start, end, False))
+			# Close the file
+			self.text_file.close()
+			self.text_file = None
+		elif response == Gtk.ResponseType.CANCEL:
+			print("Cancel clicked")
+		# Destroy dialog window
+		file_chooser.destroy()
 
 if __name__ == "__main__":
 	win = TextViewWindow()

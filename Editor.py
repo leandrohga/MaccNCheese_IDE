@@ -24,8 +24,8 @@ class EditorMainWindow(Gtk.Window):
 
 	def __init__(self):
 		# Create the window
-		Gtk.Window.__init__(self, title="Basic Text Editor")
-		self.set_default_size(500, 500)
+		Gtk.Window.__init__(self, title="MaccNCheese IDE")
+		self.set_default_size(-1, 500)
 		# Add a base grid
 		self.grid = Gtk.Grid()
 		self.add(self.grid)
@@ -76,10 +76,24 @@ class EditorMainWindow(Gtk.Window):
 		toolbar.insert(button_editpaste, 7)
 		# Separator
 		toolbar.insert(Gtk.SeparatorToolItem(), 8)
+		# Compile button
+		button_compile = Gtk.ToolButton()
+		button_compile.set_icon_name("media-playback-start-symbolic")
+		toolbar.insert(button_compile, 9)
+		# Compile and assemble button
+		button_cassemble = Gtk.ToolButton()
+		button_cassemble.set_icon_name("media-seek-forward-symbolic")
+		toolbar.insert(button_cassemble, 10)
+		# Build and run button
+		button_buildrun = Gtk.ToolButton()
+		button_buildrun.set_icon_name("media-skip-forward-symbolic")
+		toolbar.insert(button_buildrun, 11)
+		# Separator
+		toolbar.insert(Gtk.SeparatorToolItem(), 12)
 		# Help button
 		button_helpfaq = Gtk.ToolButton()
 		button_helpfaq.set_icon_name("help-faq")
-		toolbar.insert(button_helpfaq, 9)
+		toolbar.insert(button_helpfaq, 13)
 
 	def create_textview(self):
 		# Create a ScrolledWindow

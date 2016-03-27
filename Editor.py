@@ -32,6 +32,8 @@ class TextViewWindow(Gtk.Window):
 		# Create the toolbar and the text area
 		self.create_toolbar()
 		self.create_textview()
+		# Variables
+		self.text_file = None
 
 	def create_toolbar(self):
 		# Create toolbar and attach it to the grid
@@ -91,9 +93,16 @@ class TextViewWindow(Gtk.Window):
 		# Run the file chooser window and check response
 		response = file_chooser.run()
 		if response == Gtk.ResponseType.OK:
-			print("Open file: " + file_chooser.get_filename())
+			# Open and read the file
+			# TODO: make sure the file was openned, check for errors
+			self.text_file = open(file_chooser.get_filename(), 'r')
+			self.textbuffer.set_text(self.text_file.read())
+			# Close the file
+			self.text_file.close()
+			self.text_file = None
 		elif response == Gtk.ResponseType.CANCEL:
 			print("Cancel clicked")
+		# Destroy dialog window
 
 		file_chooser.destroy()
 
